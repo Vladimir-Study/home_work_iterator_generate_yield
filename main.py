@@ -5,22 +5,36 @@ nested_list = [
 ]
 
 
-# TODO №1 Написать итератор, который принимает список списков, и возвращает их плоское представление,
+# TODO №1, 4 Написать итератор, который принимает список списков, и возвращает их плоское представление,
 #  т.е последовательность состоящую из вложенных элементов
-def flat_iterator(iterations_list):
-    result_list = []
-    for lst in iterations_list:
-        for elem in lst:
-            result_list.append(elem)
-    return result_list
+class FlatIterator:
+    def __init__(self, list_iter):
+        self.iter_list = list_iter
+        self.res_lst = []
+        self.next_lst = self.iter_lst()
+
+    def __iter__(self):
+        return self
+
+    def iter_lst(self):
+        for elem in self.iter_list:
+            if type(elem) is list:
+                self.iter_list.extend(elem)
+            else:
+                self.res_lst.append(elem)
+        return self.res_lst
+
+    def __next__(self):
+        if len(self.next_lst) == 0:
+            raise StopIteration
+        else:
+            return self.next_lst.pop(0)
 
 
-# for item in flat_iterator(nested_list):
+# for item in FlatIterator(nested_list):
 #     print(item)
 
-flat_list = [item for item in flat_iterator(nested_list)]
-
-
+# flat_list = [item for item in FlatIterator(nested_list)]
 # print(flat_list)
 
 
@@ -50,14 +64,3 @@ def deep_iterator(iter_list):
 # print(deep_iter)
 
 
-# TODO №4 Написать генератор обрабатывающий списки с любым уровнем вложенности
-def deep_generator(gen_list):
-    for elem in gen_list:
-        if type(elem) is list:
-            gen_list.extend(elem)
-        else:
-            yield elem
-
-
-# for item in deep_generator(nested_list):
-#     print(item)
